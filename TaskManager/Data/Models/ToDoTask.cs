@@ -9,6 +9,8 @@ namespace TaskManager.Data.Models
         [Required]
         public Guid Id { get; set; }
 
+        //public Guid OwnerId { get; set; } TODO
+
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
@@ -17,11 +19,12 @@ namespace TaskManager.Data.Models
         [MaxLength(500)]
         public string Description { get; set; }
 
-
         public Importance ImportanceLevel { get; set; } = Importance.Medium;
         public bool IsCompleted { get; set; } = false;
 
         public DateTime AddedDate { get; set; } = DateTime.UtcNow;
+
+        //[Required] TODO
         public DateTime DueDate { get; set; }
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
     }
