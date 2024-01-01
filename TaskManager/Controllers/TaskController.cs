@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
 using TaskManager.Data.Models;
+using TaskManager.Models;
+using TaskManager.Models.Requests;
+using TaskManager.Services.Contracts;
 
 namespace TaskManager.Controllers
 {
@@ -10,24 +13,32 @@ namespace TaskManager.Controllers
     [ApiController]
     public class TaskController : ControllerBase
     {
+        private readonly ITaskService _taskService;
         private readonly ApplicationDbContext _context;
 
-        public TaskController(ApplicationDbContext context)
+        public TaskController(ITaskService taskService, ApplicationDbContext context)
         {
+            _taskService = taskService;
             _context = context;
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<ToDoTask>>> GetTasks()
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTasks([FromBody] OwnerIdRequest request)
         {
-            var tasks = await _context.Tasks.ToListAsync();
-
-            if (tasks == null || tasks.Count == 0)
+            try
+            {
+                var tasks = await _taskService.GetAll(request.OwnerId);
+                if (!tasks.Any())
+                {
+                    throw new Exception();
+                }
+                return Ok(tasks);
+            }
+            catch (Exception)
             {
                 return NotFound();
             }
 
-            return Ok(tasks);
         }
 
         [HttpGet("GetTask/{id}")]

@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
+using TaskManager.Services;
+using TaskManager.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<ITaskService, TaskService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 

@@ -4,7 +4,7 @@ namespace TaskManager.Services.Contracts
 {
     public interface ITaskService
     {
-        Task<IEnumerable<TaskDTO>> GetAll();
+        Task<IEnumerable<TaskDTO>> GetAll(string ownerId);
 
         Task<TaskDTO> GetById(string id);
 
