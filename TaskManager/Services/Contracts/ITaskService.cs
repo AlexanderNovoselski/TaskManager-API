@@ -6,12 +6,12 @@ namespace TaskManager.Services.Contracts
     {
         Task<IEnumerable<TaskDTO>> GetAll(string ownerId);
 
-        Task<TaskDTO> GetById(string id);
+        Task<TaskDTO> GetById(Guid id, string ownerId);
 
-        Task<TaskForUpdateDTO> UpdateById(string id, TaskForUpdateDTO updatedTask);
+        Task<TaskForUpdateDTO> UpdateById(Guid id, TaskForUpdateDTO updatedTask);
 
         Task<TaskForCreationDTO> Create(TaskForCreationDTO toDoTask);
 
-        Task<TaskForDeletionDTO> DeleteById(string id);
+        Task<TaskForDeletionDTO> DeleteById(Guid id);
     }
 }

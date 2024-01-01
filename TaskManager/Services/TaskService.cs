@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using TaskManager.Data;
+using TaskManager.Data.Models;
 using TaskManager.Models;
 using TaskManager.Services.Contracts;
 
@@ -19,7 +20,7 @@ namespace TaskManager.Services
             throw new NotImplementedException();
         }
 
-        public Task<TaskForDeletionDTO> DeleteById(string id)
+        public Task<TaskForDeletionDTO> DeleteById(Guid id)
         {
             throw new NotImplementedException();
         }
@@ -41,20 +42,49 @@ namespace TaskManager.Services
                     UpdatedDate = t.UpdatedDate
                 }).ToListAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 throw;
             }
         }
 
-        public Task<TaskDTO> GetById(string id)
+        public async Task<TaskDTO> GetById(Guid id, string ownerId)
+        {
+            try
+            {
+                var taskDb = await _context.Tasks
+                    .Where(x => x.OwnerId == ownerId && x.Id == id)
+                    .FirstOrDefaultAsync();
+                return MapTaskEntityToTaskDTO(taskDb);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public Task<TaskForUpdateDTO> UpdateById(Guid id, TaskForUpdateDTO updatedTask)
         {
             throw new NotImplementedException();
         }
 
-        public Task<TaskForUpdateDTO> UpdateById(string id, TaskForUpdateDTO updatedTask)
+        private TaskDTO MapTaskEntityToTaskDTO(ToDoTask taskEntity)
         {
-            throw new NotImplementedException();
+            return new TaskDTO
+            {
+                Id = taskEntity.Id,
+                OwnerId = taskEntity.OwnerId,
+                Name = taskEntity.Name,
+                Description = taskEntity.Description,
+                ImportanceLevel = taskEntity.ImportanceLevel,
+                IsCompleted = taskEntity.IsCompleted,
+                AddedDate = taskEntity.AddedDate,
+                DueDate = taskEntity.DueDate,
+                UpdatedDate = taskEntity.UpdatedDate
+            };
         }
     }
 }

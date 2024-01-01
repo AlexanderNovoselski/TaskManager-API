@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using TaskManager.Data;
 using TaskManager.Data.Models;
 using TaskManager.Models;
@@ -41,21 +42,25 @@ namespace TaskManager.Controllers
 
         }
 
-        [HttpGet("GetTask/{id}")]
-        public async Task<ActionResult<ToDoTask>> GetToDoTask(Guid id)
+        [HttpGet("GetTask")]
+        public async Task<ActionResult<TaskDTO>> GetToDoTask([FromBody] TaskIdOwnerIdRequest request)
         {
-            if (_context.Tasks == null)
+            try
+            {
+                var task = await _taskService.GetById(request.Id, request.OwnerId);
+
+                if (task == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(task);
+            }
+            catch (Exception)
             {
                 return NotFound();
             }
-            var toDoTask = await _context.Tasks.FindAsync(id);
 
-            if (toDoTask == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(toDoTask);
         }
 
         [HttpPut("update/{id}")]
