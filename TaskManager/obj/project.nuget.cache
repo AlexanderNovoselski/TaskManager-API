@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tc62kik97YQIWlvH3LBePfFa4/K6Lu4zY9fmCK2DzNDs32PQgBnIhJ08sD6/bH7GXT9vgd1isf4FQrYZU6IPQg==",
+  "dgSpecHash": "572SvAvan6aM7p7CjZC5jaHgPdduRJYTfwuQVZepSdVzquhODPB6Fgg21oMqswF84gB36YTQwJYSLH7mQIy4FQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\USER\\Desktop\\TaskManager\\TaskManager\\TaskManager\\TaskManager.csproj",
+  "projectFilePath": "C:\\Users\\USER\\Desktop\\taskmanag\\TaskManager\\TaskManager.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\USER\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

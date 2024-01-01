@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManager.Data;
 
@@ -11,9 +12,10 @@ using TaskManager.Data;
 namespace TaskManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240101195229_Adding-Data")]
+    partial class AddingData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,13 +145,13 @@ namespace TaskManager.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "805361ef-1fe8-47f7-8f4f-78c7dfeb86a2",
+                            ConcurrencyStamp = "72d72ae8-c79c-48e5-975c-5c70a150dbcf",
                             Email = "user1@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "USER1@EXAMPLE.COM",
                             NormalizedUserName = "USER1@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFtWXa6P+ajPH13H08CsS8CJDpb5htNj0L1fyG64hupmP7O8IvtS1QpgXecrJwV3aw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBNItXFMQ3ndbhlWNbvGr1xei+jEvxIsFBlipzqt2xq5SJQDFwqI/I4vRvTdLnXADg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -288,27 +290,27 @@ namespace TaskManager.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("fb50d0b8-c79f-4606-89e0-285e0d71a40e"),
-                            AddedDate = new DateTime(2024, 1, 1, 20, 1, 9, 477, DateTimeKind.Utc).AddTicks(4381),
+                            Id = new Guid("13e848cd-b9d7-43ea-8042-cdb9f4fb8fb6"),
+                            AddedDate = new DateTime(2024, 1, 1, 19, 52, 29, 533, DateTimeKind.Utc).AddTicks(6865),
                             Description = "This is a sample task.",
-                            DueDate = new DateTime(2024, 1, 8, 20, 1, 9, 477, DateTimeKind.Utc).AddTicks(4388),
+                            DueDate = new DateTime(2024, 1, 8, 19, 52, 29, 533, DateTimeKind.Utc).AddTicks(6871),
                             ImportanceLevel = 1,
                             IsCompleted = false,
                             Name = "Sample Task 1",
                             OwnerId = "1",
-                            UpdatedDate = new DateTime(2024, 1, 1, 20, 1, 9, 477, DateTimeKind.Utc).AddTicks(4397)
+                            UpdatedDate = new DateTime(2024, 1, 1, 19, 52, 29, 533, DateTimeKind.Utc).AddTicks(6876)
                         },
                         new
                         {
-                            Id = new Guid("2e98d6dc-9457-443b-bf5d-d3ce34ea198f"),
-                            AddedDate = new DateTime(2024, 1, 1, 20, 1, 9, 477, DateTimeKind.Utc).AddTicks(4398),
+                            Id = new Guid("75b2ace2-37df-49fe-bbd9-19ebc3448846"),
+                            AddedDate = new DateTime(2024, 1, 1, 19, 52, 29, 533, DateTimeKind.Utc).AddTicks(6877),
                             Description = "Another sample task.",
-                            DueDate = new DateTime(2024, 1, 15, 20, 1, 9, 477, DateTimeKind.Utc).AddTicks(4400),
+                            DueDate = new DateTime(2024, 1, 15, 19, 52, 29, 533, DateTimeKind.Utc).AddTicks(6879),
                             ImportanceLevel = 0,
                             IsCompleted = false,
                             Name = "Sample Task 2",
                             OwnerId = "1",
-                            UpdatedDate = new DateTime(2024, 1, 1, 20, 1, 9, 477, DateTimeKind.Utc).AddTicks(4400)
+                            UpdatedDate = new DateTime(2024, 1, 1, 19, 52, 29, 533, DateTimeKind.Utc).AddTicks(6880)
                         });
                 });
 

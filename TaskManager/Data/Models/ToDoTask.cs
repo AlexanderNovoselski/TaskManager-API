@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using TaskManager.Data.Enums;
 
 namespace TaskManager.Data.Models
@@ -9,7 +11,11 @@ namespace TaskManager.Data.Models
         [Required]
         public Guid Id { get; set; }
 
-        //public Guid OwnerId { get; set; } TODO
+        [Required]
+        public string OwnerId { get; set; }
+
+        [ForeignKey("OwnerId")]
+        public IdentityUser Owner { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -24,7 +30,7 @@ namespace TaskManager.Data.Models
 
         public DateTime AddedDate { get; set; } = DateTime.UtcNow;
 
-        //[Required] TODO
+        [Required]
         public DateTime DueDate { get; set; }
         public DateTime UpdatedDate { get; set; } = DateTime.UtcNow;
     }
