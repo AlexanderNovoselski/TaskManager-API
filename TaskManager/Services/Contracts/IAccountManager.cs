@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using TaskManager.Models.Requests.Account.Results;
 
 namespace TaskManager.Services.Contracts
 {
     public interface IAccountManager
     {
-        Task<IdentityResult> RegisterAsync(string username, string email, string password);
+        Task<RegistrationResult> RegisterAsync(string username, string email, string password, bool isUserAuthenticated);
 
-        Task<SignInResult> LoginAsync(string username, string password, bool rememberMe);
+        Task<LoginResult> LoginAsync(string username, string password, bool rememberMe, bool isUserAuthenticated);
 
         Task LogoutAsync();
+
+        Task DeleteUserAsync(string userId);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TaskManager.Models.Requests
+namespace TaskManager.Models.Requests.Account
 {
     public class RegisterRequest
     {

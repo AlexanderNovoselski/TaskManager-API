@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Models.Requests
+﻿namespace TaskManager.Models.Requests.Task
 {
     public class OwnerIdRequest
     {

@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using TaskManager.Services.Contracts;
-using NuGet.Protocol.Plugins;
-using TaskManager.Models.Requests;
+using System.Threading.Tasks;
+using TaskManager.Models.Requests.Account;
 
 namespace TaskManager.Controllers
 {
@@ -18,14 +17,20 @@ namespace TaskManager.Controllers
             _accountManager = accountManager;
         }
 
+        private bool IsUserAuthenticated()
+        {
+            return User.Identity.IsAuthenticated;
+        }
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            var result = await _accountManager.RegisterAsync(request.Username, request.Email, request.Password);
+            var result = await _accountManager.RegisterAsync(request.Username, request.Email, request.Password, IsUserAuthenticated());
 
             if (result.Succeeded)
             {
-                return Ok("Registration successful");
+                // If registration is successful, return the Id property
+                return Ok(new { Message = "Registration successful", UserId = result.UserId, Email = result.Email, Username = result.Username });
             }
 
             return BadRequest(result.Errors);
@@ -34,21 +39,50 @@ namespace TaskManager.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var result = await _accountManager.LoginAsync(request.Username, request.Password, request.RememberMe);
-
-            if (result.Succeeded)
+            try
             {
-                return Ok("Login successful");
-            }
+                var result = await _accountManager.LoginAsync(request.Username, request.Password, request.RememberMe, IsUserAuthenticated());
 
-            return BadRequest("Invalid login attempt");
+                if (!result.Succeeded)
+                {
+                    throw new ArgumentException();
+                }
+                    // If login is successful, return the Id property
+                return Ok(new { Message = "Login Successfull", UserId = result.UserId, Email = result.Email, Username = result.Username });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Invalid login attempt");
+            }
         }
 
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()
         {
-            await _accountManager.LogoutAsync();
-            return Ok("Logout successful");
+            try
+            {
+                await _accountManager.LogoutAsync();
+                return Ok("Logout successful");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+
+        }
+
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> DeleteUser([FromBody] UserIdRequest request)
+        {
+            try
+            {
+                await _accountManager.DeleteUserAsync(request.UserId);
+                return Ok(new { Message = "User deleted successfully" });
+            }
+            catch (Exception)
+            {
+                return BadRequest("User not found");
+            }
         }
     }
 }

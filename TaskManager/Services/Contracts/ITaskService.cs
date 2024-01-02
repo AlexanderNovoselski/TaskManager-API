@@ -1,5 +1,6 @@
 ﻿using TaskManager.Models;
 using TaskManager.Models.Requests;
+using TaskManager.Models.Requests.Task;
 
 namespace TaskManager.Services.Contracts
 {

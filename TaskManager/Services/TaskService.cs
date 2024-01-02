@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
-using System.Threading.Tasks;
 using TaskManager.Data;
 using TaskManager.Data.Enums;
 using TaskManager.Data.Models;
 using TaskManager.Models;
 using TaskManager.Models.Requests;
+using TaskManager.Models.Requests.Task;
 using TaskManager.Services.Contracts;
 
 namespace TaskManager.Services

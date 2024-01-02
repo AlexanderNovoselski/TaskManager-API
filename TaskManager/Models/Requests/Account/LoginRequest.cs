@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TaskManager.Models.Requests
+namespace TaskManager.Models.Requests.Account
 {
     public class LoginRequest
     {
@@ -12,5 +12,6 @@ namespace TaskManager.Models.Requests
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }
+
     }
 }
