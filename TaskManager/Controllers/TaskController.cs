@@ -1,6 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TaskManager.Data;
 using TaskManager.Models;
 using TaskManager.Models.Requests;
 using TaskManager.Services.Contracts;
@@ -12,14 +12,13 @@ namespace TaskManager.Controllers
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
-        private readonly ApplicationDbContext _context;
 
-        public TaskController(ITaskService taskService, ApplicationDbContext context)
+        public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
-            _context = context;
         }
 
+        [Authorize]
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTasks([FromBody] OwnerIdRequest request)
         {
@@ -34,11 +33,12 @@ namespace TaskManager.Controllers
             }
             catch (Exception)
             {
-                return NotFound();
+                return NotFound("Tasks not found");
             }
 
         }
 
+        [Authorize]
         [HttpGet("GetTask")]
         public async Task<ActionResult<TaskDTO>> GetToDoTask([FromBody] TaskIdOwnerIdRequest request)
         {
@@ -48,18 +48,19 @@ namespace TaskManager.Controllers
 
                 if (task == null)
                 {
-                    return NotFound();
+                    throw new ArgumentException();
                 }
 
                 return Ok(task);
             }
             catch (Exception)
             {
-                return NotFound();
+                return NotFound("Task not found");
             }
 
         }
 
+        [Authorize]
         [HttpPut("Update")]
         public async Task<IActionResult> PutToDoTask([FromBody] TaskForUpdateRequest request)
         {
@@ -75,6 +76,7 @@ namespace TaskManager.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("Create")]
         public async Task<ActionResult> PostToDoTask([FromBody] TaskForCreationRequest request)
         {
@@ -90,6 +92,7 @@ namespace TaskManager.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteToDoTask([FromBody] TaskIdOwnerIdRequest request)
         {
@@ -100,12 +103,13 @@ namespace TaskManager.Controllers
             }
             catch (Exception)
             {
-                return NotFound();
+                return NotFound("Task not found");
             }
 
         }
 
-        [HttpPatch("Update")]
+        [Authorize]
+        [HttpPatch("UpdateCompletion")]
 
         public async Task<IActionResult> UpdateCompletition([FromBody] PatchTaskRequest request)
         {
@@ -122,10 +126,11 @@ namespace TaskManager.Controllers
             }
             catch (Exception)
             {
-                return NotFound();
+                return NotFound("Task not found");
             }
         }
 
+        [Authorize]
         [HttpGet("GetCount")]
 
         public async Task<IActionResult> GetTotalCount([FromBody] OwnerIdRequest request)
@@ -139,7 +144,7 @@ namespace TaskManager.Controllers
             }
             catch (Exception)
             {
-                return NotFound("No tasks founds");
+                return NotFound("Tasks not found");
             }
 
         }
