@@ -1,9 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using TaskManager.Data;
-using TaskManager.Data.Models;
 using TaskManager.Models;
 using TaskManager.Models.Requests;
 using TaskManager.Services.Contracts;
@@ -63,38 +60,34 @@ namespace TaskManager.Controllers
 
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> PutToDoTask(Guid id, ToDoTask toDoTask)
+        [HttpPut("Update")]
+        public async Task<IActionResult> PutToDoTask([FromBody] TaskForUpdateRequest request)
         {
-            if (id != toDoTask.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(toDoTask).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-            }
+                await _taskService.UpdateById(request);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpPost("create")]
-        public async Task<ActionResult<ToDoTask>> PostToDoTask(ToDoTask toDoTask)
+        [HttpPost("Create")]
+        public async Task<ActionResult> PostToDoTask([FromBody] TaskForCreationRequest request)
         {
-            if (_context.Tasks == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Tasks'  is null.");
-            }
-            _context.Tasks.Add(toDoTask);
-            await _context.SaveChangesAsync();
+                await _taskService.Create(request);
 
-            return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed to create the task.");
+            }
         }
 
         [HttpDelete("Delete")]
@@ -112,7 +105,44 @@ namespace TaskManager.Controllers
 
         }
 
+        [HttpPatch("Update")]
+
+        public async Task<IActionResult> UpdateCompletition([FromBody] PatchTaskRequest request)
+        {
+            try
+            {
+                await _taskService.UpdateCompletition(request);
+                var result = new 
+                { 
+                    id = request.Id,
+                    ownerId = request.OwnerId,
+                    TaskCompletition = request.IsCompleted 
+                };
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("GetCount")]
+
+        public async Task<IActionResult> GetTotalCount([FromBody] OwnerIdRequest request)
+        {
+            try
+            {
+                var count = await _taskService.GetCountOfAll(request);
+                var result = new { Count = count };
+
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return NotFound("No tasks founds");
+            }
+
+        }
 
     }
-
 }

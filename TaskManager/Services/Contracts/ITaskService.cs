@@ -1,4 +1,5 @@
 ﻿using TaskManager.Models;
+using TaskManager.Models.Requests;
 
 namespace TaskManager.Services.Contracts
 {
@@ -8,10 +9,14 @@ namespace TaskManager.Services.Contracts
 
         Task<TaskDTO> GetById(Guid id, string ownerId);
 
-        Task<TaskForUpdateDTO> UpdateById(Guid id, TaskForUpdateDTO updatedTask);
+        Task UpdateById(TaskForUpdateRequest updatedTask);
 
-        Task<TaskForCreationDTO> Create(TaskForCreationDTO toDoTask);
+        Task Create(TaskForCreationRequest toDoTask);
 
         Task DeleteById(Guid id, string ownerId);
+
+        Task<int> GetCountOfAll(OwnerIdRequest ownerId);
+
+        Task UpdateCompletition(PatchTaskRequest request);
     }
 }

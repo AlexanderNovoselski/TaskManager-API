@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using System.Threading.Tasks;
 using TaskManager.Data;
+using TaskManager.Data.Enums;
 using TaskManager.Data.Models;
 using TaskManager.Models;
+using TaskManager.Models.Requests;
 using TaskManager.Services.Contracts;
 
 namespace TaskManager.Services
@@ -15,9 +18,45 @@ namespace TaskManager.Services
         {
             _context = context;
         }
-        public Task<TaskForCreationDTO> Create(TaskForCreationDTO toDoTask)
+
+        public async Task UpdateCompletition(PatchTaskRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == request.Id && x.OwnerId == request.OwnerId);
+                if (task == null) throw new ArgumentException("No task found");
+
+                task.IsCompleted = request.IsCompleted;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task Create(TaskForCreationRequest task)
+        {
+            try
+            {
+                var toDoTask = new ToDoTask()
+                {
+                    Id = Guid.NewGuid(),
+                    OwnerId = task.OwnerId,
+                    Name = task.Name,
+                    Description = task.Description,
+                    ImportanceLevel = Enum.Parse<Importance>(task.ImportanceLevel),
+                    DueDate = task.DueDate,
+                };
+                await _context.Tasks.AddAsync(toDoTask);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
 
         public async Task DeleteById(Guid id, string ownerId)
@@ -82,9 +121,44 @@ namespace TaskManager.Services
             }
         }
 
-        public Task<TaskForUpdateDTO> UpdateById(Guid id, TaskForUpdateDTO updatedTask)
+        public async Task<int> GetCountOfAll(OwnerIdRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var taskDb = await _context.Tasks.Where(t => t.OwnerId == request.OwnerId).ToListAsync();
+                if (taskDb == null) throw new ArgumentException("No tasks found");
+                return taskDb.Count();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+        }
+
+        public async Task UpdateById(TaskForUpdateRequest updatedTask)
+        {
+            try
+            {
+                var taskDb = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == updatedTask.Id && t.OwnerId == updatedTask.OwnerId);
+
+                if (taskDb == null)
+                {
+                    throw new ArgumentException("Task is null");
+                }
+                taskDb.Name = updatedTask.Name;
+                taskDb.Description = updatedTask.Description;
+                taskDb.ImportanceLevel = Enum.Parse<Importance>(updatedTask.ImportanceLevel);
+                taskDb.DueDate = updatedTask.DueDate;
+                taskDb.UpdatedDate = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
 
         private TaskDTO MapTaskEntityToTaskDTO(ToDoTask taskEntity)

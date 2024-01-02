@@ -1,22 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TaskManager.Data.Enums;
 
-namespace TaskManager.Models
+namespace TaskManager.Models.Requests
 {
-    public class TaskForCreationDTO
+    public class TaskForUpdateRequest
     {
         [Required]
-        [MaxLength(100)]
-        public string Name { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string OwnerId { get; set; }
 
         [Required]
+        [MaxLength(100)]
+        public string Name { get; set; }
+
+        [Required]
         [MaxLength(500)]
         public string Description { get; set; }
 
-        public Importance ImportanceLevel { get; set; } = Importance.Medium;
+        [Required]
+        public string ImportanceLevel { get; set; }
 
         [Required]
         public DateTime DueDate { get; set; }
