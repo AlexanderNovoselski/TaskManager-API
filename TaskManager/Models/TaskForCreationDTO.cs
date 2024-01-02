@@ -10,6 +10,9 @@ namespace TaskManager.Models
         public string Name { get; set; }
 
         [Required]
+        public string OwnerId { get; set; }
+
+        [Required]
         [MaxLength(500)]
         public string Description { get; set; }
 

@@ -79,14 +79,6 @@ namespace TaskManager.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ToDoTaskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
 
             return Ok();
@@ -105,28 +97,22 @@ namespace TaskManager.Controllers
             return CreatedAtAction("GetToDoTask", new { id = toDoTask.Id }, toDoTask);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteToDoTask(Guid id)
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> DeleteToDoTask([FromBody] TaskIdOwnerIdRequest request)
         {
-            if (_context.Tasks == null)
+            try
+            {
+                await _taskService.DeleteById(request.Id, request.OwnerId);
+                return Ok();
+            }
+            catch (Exception)
             {
                 return NotFound();
             }
-            var toDoTask = await _context.Tasks.FindAsync(id);
-            if (toDoTask == null)
-            {
-                return NotFound();
-            }
 
-            _context.Tasks.Remove(toDoTask);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
         }
 
-        private bool ToDoTaskExists(Guid id)
-        {
-            return (_context.Tasks?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+
     }
+
 }

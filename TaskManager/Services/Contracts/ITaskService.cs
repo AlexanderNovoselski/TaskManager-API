@@ -12,6 +12,6 @@ namespace TaskManager.Services.Contracts
 
         Task<TaskForCreationDTO> Create(TaskForCreationDTO toDoTask);
 
-        Task<TaskForDeletionDTO> DeleteById(Guid id);
+        Task DeleteById(Guid id, string ownerId);
     }
 }

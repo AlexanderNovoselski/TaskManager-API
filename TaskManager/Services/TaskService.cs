@@ -20,9 +20,25 @@ namespace TaskManager.Services
             throw new NotImplementedException();
         }
 
-        public Task<TaskForDeletionDTO> DeleteById(Guid id)
+        public async Task DeleteById(Guid id, string ownerId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var task = _context.Tasks.FirstOrDefault(t => t.Id == id);
+                if (!(task.OwnerId == ownerId))
+                {
+                    throw new Exception("You are not the owner of this task");
+                }
+
+                _context.Remove(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
+
         }
 
         public async Task<IEnumerable<TaskDTO>> GetAll(string ownerId)
