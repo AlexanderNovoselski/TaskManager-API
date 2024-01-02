@@ -20,22 +20,24 @@ namespace TaskManager.Controllers
 
         [Authorize]
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTasks([FromBody] OwnerIdRequest request)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTasks([FromBody] OwnerIdRequest request, [FromQuery] int pageNumber = 1)
         {
+            const int pageSize = 8;
             try
             {
-                var tasks = await _taskService.GetAll(request.OwnerId);
+                var tasks = await _taskService.GetTasksPaginated(request.OwnerId, pageNumber, pageSize);
+
                 if (!tasks.Any())
                 {
-                    throw new Exception();
+                    return NotFound("Tasks not found");
                 }
+
                 return Ok(tasks);
             }
             catch (Exception)
             {
-                return NotFound("Tasks not found");
+                return StatusCode(500, "An error occurred while processing your request.");
             }
-
         }
 
         [Authorize]

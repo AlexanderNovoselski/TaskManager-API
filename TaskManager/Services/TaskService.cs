@@ -80,22 +80,30 @@ namespace TaskManager.Services
 
         }
 
-        public async Task<IEnumerable<TaskDTO>> GetAll(string ownerId)
+        public async Task<IEnumerable<TaskDTO>> GetTasksPaginated(string ownerId, int pageNumber, int pageSize)
         {
             try
             {
-                return await _context.Tasks.Where(x => x.OwnerId == ownerId).Select(t => new TaskDTO
-                {
-                    Id = t.Id,
-                    OwnerId = t.OwnerId,
-                    Name = t.Name,
-                    Description = t.Description,
-                    ImportanceLevel = t.ImportanceLevel,
-                    IsCompleted = t.IsCompleted,
-                    AddedDate = t.AddedDate,
-                    DueDate = t.DueDate,
-                    UpdatedDate = t.UpdatedDate
-                }).ToListAsync();
+                var tasks = await _context.Tasks
+                    .Where(x => x.OwnerId == ownerId)
+                    .OrderByDescending(t => t.AddedDate)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(t => new TaskDTO
+                    {
+                        Id = t.Id,
+                        OwnerId = t.OwnerId,
+                        Name = t.Name,
+                        Description = t.Description,
+                        ImportanceLevel = t.ImportanceLevel,
+                        IsCompleted = t.IsCompleted,
+                        AddedDate = t.AddedDate,
+                        DueDate = t.DueDate,
+                        UpdatedDate = t.UpdatedDate
+                    })
+                    .ToListAsync();
+
+                return tasks;
             }
             catch (Exception e)
             {
