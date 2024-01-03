@@ -23,7 +23,7 @@ namespace TaskManager.Data.Models
 
         [Required]
         [MaxLength(500)]
-        public string Description { get; set; }
+        public string Description { get; set; } = "-";
 
         public Importance ImportanceLevel { get; set; } = Importance.Medium;
         public bool IsCompleted { get; set; } = false;
