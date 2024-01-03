@@ -14,7 +14,7 @@ namespace TaskManager.Models.Requests
 
         [Required]
         [MaxLength(500)]
-        public string Description { get; set; }
+        public string Description { get; set; } = "-";
 
         public string ImportanceLevel { get; set; } = "Medium";
 
