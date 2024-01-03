@@ -20,12 +20,12 @@ namespace TaskManager.Services
             _context = context;
         }
 
-        public async Task UpdateCompletition(PatchTaskRequest request)
+        public async Task UpdateCompletition(PatchTaskRequest request, string ownerId)
         {
             try
             {
                 // Search Task by Id and Ownerid
-                var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == request.Id && x.OwnerId == request.OwnerId);
+                var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == request.Id && x.OwnerId == ownerId);
                 if (task == null) throw new ArgumentException("No task found");
 
                 // Update completition status && save db
@@ -39,7 +39,7 @@ namespace TaskManager.Services
             }
         }
 
-        public async Task Create(TaskForCreationRequest task)
+        public async Task Create(TaskForCreationRequest task, string ownerId)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace TaskManager.Services
                 var toDoTask = new ToDoTask()
                 {
                     Id = Guid.NewGuid(),
-                    OwnerId = task.OwnerId,
+                    OwnerId = ownerId,
                     Name = task.Name,
                     Description = task.Description,
                     ImportanceLevel = Enum.Parse<Importance>(task.ImportanceLevel),
@@ -139,12 +139,12 @@ namespace TaskManager.Services
             }
         }
 
-        public async Task<int> GetCountOfAll(OwnerIdRequest request)
+        public async Task<int> GetCountOfAll(string ownerId)
         {
             try
             {
                 // Get all of the tasks
-                var taskDb = await _context.Tasks.Where(t => t.OwnerId == request.OwnerId).ToListAsync();
+                var taskDb = await _context.Tasks.Where(t => t.OwnerId == ownerId).ToListAsync();
                 if (taskDb == null) throw new ArgumentException("No tasks found");
 
                 // Get the count of the tasks
@@ -157,12 +157,12 @@ namespace TaskManager.Services
             }
         }
 
-        public async Task UpdateById(TaskForUpdateRequest updatedTask)
+        public async Task UpdateById(TaskForUpdateRequest updatedTask, string ownerId)
         {
             try
             {
                 // Get the task that needs to be updated
-                var taskDb = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == updatedTask.Id && t.OwnerId == updatedTask.OwnerId);
+                var taskDb = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == updatedTask.Id && t.OwnerId == ownerId);
 
                 if (taskDb == null)
                 {

@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using TaskManager.Services.Contracts;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskManager.Models.Requests.Account;
+using TaskManager.Services.Contracts;
 
 namespace TaskManager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseApiController
     {
         //Dependency injection
         private readonly IAccountManager _accountManager;
@@ -74,11 +72,11 @@ namespace TaskManager.Controllers
         }
 
         [HttpDelete("Delete")]
-        public async Task<IActionResult> DeleteUser([FromBody] UserIdRequest request)
+        public async Task<IActionResult> DeleteUser()
         {
             try
             {
-                await _accountManager.DeleteUserAsync(request.UserId);
+                await _accountManager.DeleteUserAsync(OwnerId);
                 return Ok(new { Message = "User deleted successfully" });
             }
             catch (Exception)

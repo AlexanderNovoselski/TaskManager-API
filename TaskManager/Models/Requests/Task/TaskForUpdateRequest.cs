@@ -8,8 +8,6 @@ namespace TaskManager.Models.Requests
         [Required]
         public Guid Id { get; set; }
 
-        [Required]
-        public string OwnerId { get; set; }
 
         [Required]
         [MaxLength(100)]

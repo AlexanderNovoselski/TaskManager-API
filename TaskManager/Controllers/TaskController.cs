@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TaskManager.Models;
 using TaskManager.Models.Requests;
 using TaskManager.Models.Requests.Task;
@@ -10,7 +11,7 @@ namespace TaskManager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TaskController : ControllerBase
+    public class TaskController : BaseApiController
     {
         private readonly ITaskService _taskService;
 
@@ -21,12 +22,12 @@ namespace TaskManager.Controllers
 
         [Authorize]
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTasks([FromBody] OwnerIdRequest request, [FromQuery] int pageNumber = 1)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTasks([FromQuery] int pageNumber = 1)
         {
             const int pageSize = 8;
             try
             {
-                var tasks = await _taskService.GetTasksPaginated(request.OwnerId, pageNumber, pageSize);
+                var tasks = await _taskService.GetTasksPaginated(OwnerId, pageNumber, pageSize);
 
                 if (!tasks.Any())
                 {
@@ -47,7 +48,8 @@ namespace TaskManager.Controllers
         {
             try
             {
-                var task = await _taskService.GetById(request.Id, request.OwnerId);
+
+                var task = await _taskService.GetById(request.Id, OwnerId);
 
                 if (task == null)
                 {
@@ -69,7 +71,7 @@ namespace TaskManager.Controllers
         {
             try
             {
-                await _taskService.UpdateById(request);
+                await _taskService.UpdateById(request, OwnerId);
 
                 return Ok();
             }
@@ -85,7 +87,7 @@ namespace TaskManager.Controllers
         {
             try
             {
-                await _taskService.Create(request);
+                await _taskService.Create(request, OwnerId);
 
                 return Ok();
             }
@@ -101,7 +103,7 @@ namespace TaskManager.Controllers
         {
             try
             {
-                await _taskService.DeleteById(request.Id, request.OwnerId);
+                await _taskService.DeleteById(request.Id, OwnerId);
                 return Ok();
             }
             catch (Exception)
@@ -118,11 +120,11 @@ namespace TaskManager.Controllers
         {
             try
             {
-                await _taskService.UpdateCompletition(request);
+                await _taskService.UpdateCompletition(request, OwnerId);
                 var result = new 
                 { 
                     id = request.Id,
-                    ownerId = request.OwnerId,
+                    ownerId = OwnerId,
                     TaskCompletition = request.IsCompleted 
                 };
                 return Ok(result);
@@ -136,11 +138,11 @@ namespace TaskManager.Controllers
         [Authorize]
         [HttpGet("GetCount")]
 
-        public async Task<IActionResult> GetTotalCount([FromBody] OwnerIdRequest request)
+        public async Task<IActionResult> GetTotalCount()
         {
             try
             {
-                var count = await _taskService.GetCountOfAll(request);
+                var count = await _taskService.GetCountOfAll(OwnerId);
                 var result = new { Count = count };
 
                 return Ok(result);

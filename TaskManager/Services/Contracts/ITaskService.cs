@@ -10,14 +10,14 @@ namespace TaskManager.Services.Contracts
 
         Task<TaskDTO> GetById(Guid id, string ownerId);
 
-        Task UpdateById(TaskForUpdateRequest updatedTask);
+        Task UpdateById(TaskForUpdateRequest updatedTask, string ownerId);
 
-        Task Create(TaskForCreationRequest toDoTask);
+        Task Create(TaskForCreationRequest toDoTask, string ownerId);
 
         Task DeleteById(Guid id, string ownerId);
 
-        Task<int> GetCountOfAll(OwnerIdRequest ownerId);
+        Task<int> GetCountOfAll(string ownerId);
 
-        Task UpdateCompletition(PatchTaskRequest request);
+        Task UpdateCompletition(PatchTaskRequest request, string ownerId);
     }
 }
