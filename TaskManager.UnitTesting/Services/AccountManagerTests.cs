@@ -1,6 +1,6 @@
-namespace TaskManager.UnitTesting
+﻿namespace TaskManager.UnitTesting
 {
-    public class Tests
+    public class AccountManagerTests
     {
         [SetUp]
         public void Setup()
