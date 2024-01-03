@@ -11,6 +11,8 @@ namespace TaskManager.Services
 {
     public class TaskService : ITaskService
     {
+
+        // Dependency Injection
         private readonly ApplicationDbContext _context;
 
         public TaskService(ApplicationDbContext context)
@@ -22,9 +24,11 @@ namespace TaskManager.Services
         {
             try
             {
+                // Search Task by Id and Ownerid
                 var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == request.Id && x.OwnerId == request.OwnerId);
                 if (task == null) throw new ArgumentException("No task found");
 
+                // Update completition status && save db
                 task.IsCompleted = request.IsCompleted;
                 await _context.SaveChangesAsync();
             }
@@ -39,6 +43,7 @@ namespace TaskManager.Services
         {
             try
             {
+                // Create db model with the request data
                 var toDoTask = new ToDoTask()
                 {
                     Id = Guid.NewGuid(),
@@ -48,6 +53,8 @@ namespace TaskManager.Services
                     ImportanceLevel = Enum.Parse<Importance>(task.ImportanceLevel),
                     DueDate = task.DueDate,
                 };
+
+                // Add task to db && save db
                 await _context.Tasks.AddAsync(toDoTask);
                 await _context.SaveChangesAsync();
             }
@@ -62,12 +69,14 @@ namespace TaskManager.Services
         {
             try
             {
+                // Search task by Id
                 var task = _context.Tasks.FirstOrDefault(t => t.Id == id);
                 if (!(task.OwnerId == ownerId))
                 {
                     throw new Exception("You are not the owner of this task");
                 }
 
+                // Delete task && save db
                 _context.Remove(task);
                 await _context.SaveChangesAsync();
             }
@@ -83,6 +92,7 @@ namespace TaskManager.Services
         {
             try
             {
+                // Search for all tasks from a certain page with const pageSize 8, where userId owns a task, and ordering tasks by descending
                 var tasks = await _context.Tasks
                     .Where(x => x.OwnerId == ownerId)
                     .OrderByDescending(t => t.AddedDate)
@@ -115,6 +125,7 @@ namespace TaskManager.Services
         {
             try
             {
+                // Get one task by certain id
                 var taskDb = await _context.Tasks
                     .Where(x => x.OwnerId == ownerId && x.Id == id)
                     .FirstOrDefaultAsync();
@@ -132,8 +143,11 @@ namespace TaskManager.Services
         {
             try
             {
+                // Get all of the tasks
                 var taskDb = await _context.Tasks.Where(t => t.OwnerId == request.OwnerId).ToListAsync();
                 if (taskDb == null) throw new ArgumentException("No tasks found");
+
+                // Get the count of the tasks
                 return taskDb.Count();
             }
             catch (Exception e)
@@ -147,18 +161,23 @@ namespace TaskManager.Services
         {
             try
             {
+                // Get the task that needs to be updated
                 var taskDb = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == updatedTask.Id && t.OwnerId == updatedTask.OwnerId);
 
                 if (taskDb == null)
                 {
                     throw new ArgumentException("Task is null");
                 }
+                
+                // Update the tasks properties
+
                 taskDb.Name = updatedTask.Name;
                 taskDb.Description = updatedTask.Description;
                 taskDb.ImportanceLevel = Enum.Parse<Importance>(updatedTask.ImportanceLevel);
                 taskDb.DueDate = updatedTask.DueDate;
                 taskDb.UpdatedDate = DateTime.UtcNow;
 
+                // Save db
                 await _context.SaveChangesAsync();
             }
             catch (Exception e)
@@ -168,6 +187,7 @@ namespace TaskManager.Services
             }
         }
 
+        // Helper method to map the db entity
         private TaskDTO MapTaskEntityToTaskDTO(ToDoTask taskEntity)
         {
             return new TaskDTO

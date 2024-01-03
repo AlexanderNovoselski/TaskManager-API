@@ -10,6 +10,7 @@ namespace TaskManager.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        //Dependency injection
         private readonly IAccountManager _accountManager;
 
         public AccountController(IAccountManager accountManager)
@@ -17,6 +18,7 @@ namespace TaskManager.Controllers
             _accountManager = accountManager;
         }
 
+        // Private helper function for authentication
         private bool IsUserAuthenticated()
         {
             return User.Identity.IsAuthenticated;

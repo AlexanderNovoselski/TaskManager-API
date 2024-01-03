@@ -16,6 +16,7 @@ namespace TaskManager.Services
             _signInManager = signInManager;
         }
 
+
         public async Task<RegistrationResult> RegisterAsync(string username, string email, string password, bool isUserAuthenticated)
         {
             try
@@ -26,6 +27,7 @@ namespace TaskManager.Services
                     return new RegistrationResult { Succeeded = false, Errors = new[] { "User is already logged in" } };
                 }
 
+                // Creating new user with the model properties
                 var user = new IdentityUser { UserName = username, Email = email };
                 var result = await _userManager.CreateAsync(user, password);
 
@@ -79,6 +81,7 @@ namespace TaskManager.Services
         {
             try
             {
+                // Logout of user
                 await _signInManager.SignOutAsync();
             }
             catch (Exception e)
@@ -92,6 +95,7 @@ namespace TaskManager.Services
         {
             try
             {
+                // Searching for user in the DB
                 var user = await _userManager.FindByIdAsync(userId);
 
                 if (user == null)
@@ -99,6 +103,7 @@ namespace TaskManager.Services
                     throw new ArgumentException("Account not found");
                 }
 
+                // Deleting user
                 await _userManager.DeleteAsync(user);
             }
             catch (Exception e)
