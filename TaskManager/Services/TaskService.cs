@@ -20,6 +20,36 @@ namespace TaskManager.Services
             _context = context;
         }
 
+        public async Task<IEnumerable<TaskDTO>> GetTasksBySearch(string ownerId, string searchCriteria)
+        {
+            try
+            {
+                // Search for tasks based on the provided criteria, where userId owns a task
+                var tasks = await _context.Tasks
+                    .Where(x => x.OwnerId == ownerId && (x.Name.Contains(searchCriteria) || x.Description.Contains(searchCriteria)))
+                    .OrderByDescending(t => t.AddedDate)
+                    .Select(t => new TaskDTO
+                    {
+                        Id = t.Id,
+                        OwnerId = t.OwnerId,
+                        Name = t.Name,
+                        Description = t.Description,
+                        ImportanceLevel = t.ImportanceLevel,
+                        IsCompleted = t.IsCompleted,
+                        AddedDate = t.AddedDate,
+                        DueDate = t.DueDate,
+                        UpdatedDate = t.UpdatedDate
+                    })
+                    .ToListAsync();
+
+                return tasks;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error retrieving tasks by search criteria", ex);
+            }
+        }
         public async Task UpdateCompletition(PatchTaskRequest request, string ownerId)
         {
             try

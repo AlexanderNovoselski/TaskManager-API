@@ -21,6 +21,26 @@ namespace TaskManager.Controllers
         }
 
         [Authorize]
+        [HttpGet("Search")]
+        public async Task<IActionResult> GetTasksBySearch([FromQuery] string searchCriteria)
+        {
+            try
+            {
+                // Call the service method to get tasks by search criteria
+                var tasks = await _taskService.GetTasksBySearch(OwnerId, searchCriteria);
+
+                // Return the result as JSON
+                return Ok(tasks);
+            }
+            catch (TaskManagerException ex)
+            {
+                // Handle specific exceptions if needed
+                return BadRequest(new { Message = ex.Message });
+            }
+
+        }
+
+        [Authorize]
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTasks([FromQuery] int pageNumber = 1)
         {
