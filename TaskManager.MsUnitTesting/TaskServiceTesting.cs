@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TaskManager.Data;
 using TaskManager.Data.Enums;
 using TaskManager.Data.Models;
+using TaskManager.Models;
 using TaskManager.Models.Requests;
 using TaskManager.Services;
 using TaskManager.Services.Contracts;
@@ -68,18 +69,61 @@ public class TaskServiceTests
     }
 
     [TestMethod]
-    public async Task UpdateCompletition_ValidTask_UpdatesCompletionStatus()
+    public async Task UpdateCompletition_ValidTask_UpdatesCompletionStatusToTrue()
     {
         // Arrange
         var request = new PatchTaskRequest { Id = Guid.Parse("958bda36-754a-4358-b991-225d8de25e92"), IsCompleted = true };
+        var request2 = new PatchTaskRequest { Id = Guid.Parse("3c6eb404-869a-4da1-bd9f-4a88ac42a7e7"), IsCompleted = false };
+        var ownerId = "testOwnerId1";
+        var ownerId2 = "testOwnerId2";
+
+        // Act
+        await taskService.UpdateCompletition(request, ownerId);
+        await taskService.UpdateCompletition(request2, ownerId2);
+
+        // Assert
+        var updatedTask = await taskService.GetById(request.Id, ownerId); // Replace this with the actual method to retrieve the task by ID from your database
+        var updatedTask2 = await taskService.GetById(request2.Id, ownerId2); // Replace this with the actual method to retrieve the task by ID from your database
+
+        Assert.IsNotNull(updatedTask, "Task not found in the database");
+        Assert.IsTrue(updatedTask.IsCompleted, "Task completion status not updated to true");
+
+        Assert.IsNotNull(updatedTask2, "Task not found in the database");
+        Assert.IsFalse(updatedTask2.IsCompleted, "Task completion status not updated to false");
+    }
+
+    [TestMethod]
+    public async Task UpdateCompletition_ValidTask_UpdatesCompletionStatusToFalse()
+    {
+        // Arrange
+        var request = new PatchTaskRequest { Id = Guid.Parse("958bda36-754a-4358-b991-225d8de25e92"), IsCompleted = false };
         var ownerId = "testOwnerId1";
 
         // Act
         await taskService.UpdateCompletition(request, ownerId);
 
         // Assert
-        // Add your assertions here
+        var updatedTask = await taskService.GetById(request.Id, ownerId);
+
+        Assert.IsNotNull(updatedTask, "Task not found in the database");
+        Assert.IsFalse(updatedTask.IsCompleted, "Task completion status not updated to false");
+
     }
+
+    [TestMethod]
+    public async Task UpdateCompletition_InvalidTask_UpdatesCompletionStatusTo()
+    {
+        // Arrange
+        var request = new PatchTaskRequest { Id = Guid.Parse("BECF18A9-6BA8-431D-AF65-299537010172"), IsCompleted = false };
+        var ownerId = "testOwnerId1";
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () => {
+            await taskService.UpdateCompletition(request, ownerId);
+        });
+    }
+
+
 
     // Add other test methods...
 }

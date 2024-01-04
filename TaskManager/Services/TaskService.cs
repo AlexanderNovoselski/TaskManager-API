@@ -23,18 +23,21 @@ namespace TaskManager.Services
         {
             try
             {
-                // Search Task by Id and Ownerid
-                var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == request.Id && x.OwnerId == ownerId);
-                if (task == null) throw new ArgumentException("No task found");
+                var task = await _context.Tasks
+                    .FirstOrDefaultAsync(x => x.Id == request.Id && x.OwnerId == ownerId);
 
-                // Update completition status && save db
+                if (task == null)
+                {
+                    throw new TaskManagerException("Task not found");
+                }
+
                 task.IsCompleted = request.IsCompleted;
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw;
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error updating completion status", ex);
             }
         }
 
@@ -57,10 +60,10 @@ namespace TaskManager.Services
                 await _context.Tasks.AddAsync(toDoTask);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw;
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error while creating the task", ex);
             }
         }
 
@@ -68,24 +71,28 @@ namespace TaskManager.Services
         {
             try
             {
-                // Search task by Id
                 var task = _context.Tasks.FirstOrDefault(t => t.Id == id);
-                if (!(task.OwnerId == ownerId))
+
+                if (task == null)
                 {
-                    throw new Exception("You are not the owner of this task");
+                    throw new TaskManagerException("Task not found");
                 }
 
-                // Delete task && save db
+                if (task.OwnerId != ownerId)
+                {
+                    throw new TaskManagerException("You are not the owner of this task");
+                }
+
                 _context.Remove(task);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw;
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error deleting task", ex);
             }
-
         }
+
 
         public async Task<IEnumerable<TaskDTO>> GetTasksPaginated(string ownerId, int pageNumber, int pageSize)
         {
@@ -113,10 +120,10 @@ namespace TaskManager.Services
 
                 return tasks;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw;
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error retrieving paginated tasks", ex);
             }
         }
 
@@ -131,10 +138,10 @@ namespace TaskManager.Services
                 return MapTaskEntityToTaskDTO(taskDb);
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw;
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error retrieving the specified task", ex);
             }
         }
 
@@ -144,15 +151,18 @@ namespace TaskManager.Services
             {
                 // Get all of the tasks
                 var taskDb = await _context.Tasks.Where(t => t.OwnerId == ownerId).ToListAsync();
-                if (taskDb == null) throw new ArgumentException("No tasks found");
+                if (taskDb == null || taskDb.Count == 0)
+                {
+                    throw new TaskManagerException("No tasks found");
+                }
 
                 // Get the count of the tasks
                 return taskDb.Count();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw;
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error retrieving the count of the tasks", ex);
             }
         }
 
@@ -165,9 +175,9 @@ namespace TaskManager.Services
 
                 if (taskDb == null)
                 {
-                    throw new ArgumentException("Task is null");
+                    throw new TaskManagerException("Task not found for update");
                 }
-                
+
                 // Update the tasks properties
 
                 taskDb.Name = updatedTask.Name;
@@ -179,10 +189,10 @@ namespace TaskManager.Services
                 // Save db
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e.Message);
-                throw;
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error updating task", ex);
             }
         }
 
