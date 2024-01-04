@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using TaskManager.Data;
 using TaskManager.Data.Enums;
 using TaskManager.Data.Models;
@@ -45,6 +46,10 @@ namespace TaskManager.Services
         {
             try
             {
+                // Validate the task manually
+                var validationContext = new ValidationContext(task, serviceProvider: null, items: null);
+                Validator.ValidateObject(task, validationContext, validateAllProperties: true);
+
                 // Create db model with the request data
                 var toDoTask = new ToDoTask()
                 {
@@ -59,6 +64,11 @@ namespace TaskManager.Services
                 // Add task to db && save db
                 await _context.Tasks.AddAsync(toDoTask);
                 await _context.SaveChangesAsync();
+            }
+            catch (ValidationException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Validation error while creating the task", ex);
             }
             catch (Exception ex)
             {
@@ -168,8 +178,13 @@ namespace TaskManager.Services
 
         public async Task UpdateById(TaskForUpdateRequest updatedTask, string ownerId)
         {
+
             try
             {
+                // Validate the updatedTask manually
+                var validationContext = new ValidationContext(updatedTask, serviceProvider: null, items: null);
+                Validator.ValidateObject(updatedTask, validationContext, validateAllProperties: true);
+
                 // Get the task that needs to be updated
                 var taskDb = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == updatedTask.Id && t.OwnerId == ownerId);
 
@@ -179,15 +194,23 @@ namespace TaskManager.Services
                 }
 
                 // Update the tasks properties
-
                 taskDb.Name = updatedTask.Name;
                 taskDb.Description = updatedTask.Description;
                 taskDb.ImportanceLevel = Enum.Parse<Importance>(updatedTask.ImportanceLevel);
+
+                // Validate DueDate after the update
+                Validator.ValidateProperty(updatedTask.DueDate, new ValidationContext(updatedTask) { MemberName = nameof(updatedTask.DueDate) });
+
                 taskDb.DueDate = updatedTask.DueDate;
                 taskDb.UpdatedDate = DateTime.UtcNow;
 
                 // Save db
                 await _context.SaveChangesAsync();
+            }
+            catch (ValidationException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error updating task", ex);
             }
             catch (Exception ex)
             {
@@ -195,6 +218,7 @@ namespace TaskManager.Services
                 throw new TaskManagerException("Error updating task", ex);
             }
         }
+       
 
         // Helper method to map the db entity
         private TaskDTO MapTaskEntityToTaskDTO(ToDoTask taskEntity)

@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using TaskManager.Data;
 using TaskManager.Data.Enums;
 using TaskManager.Data.Models;
@@ -82,8 +83,8 @@ public class TaskServiceTests
         await taskService.UpdateCompletition(request2, ownerId2);
 
         // Assert
-        var updatedTask = await taskService.GetById(request.Id, ownerId); // Replace this with the actual method to retrieve the task by ID from your database
-        var updatedTask2 = await taskService.GetById(request2.Id, ownerId2); // Replace this with the actual method to retrieve the task by ID from your database
+        var updatedTask = await taskService.GetById(request.Id, ownerId);
+        var updatedTask2 = await taskService.GetById(request2.Id, ownerId2);
 
         Assert.IsNotNull(updatedTask, "Task not found in the database");
         Assert.IsTrue(updatedTask.IsCompleted, "Task completion status not updated to true");
@@ -118,12 +119,288 @@ public class TaskServiceTests
         var ownerId = "testOwnerId1";
 
         // Act and Assert
-        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () => {
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
             await taskService.UpdateCompletition(request, ownerId);
         });
     }
 
+    public async Task Create_SuccessfulTaskCreation()
+    {
+        // Arrange
+        var ownerId = "testOwnerId1";
+        var request = new TaskForCreationRequest
+        {
+            Name = "Test Task",
+            Description = "Test Description",
+            ImportanceLevel = "High",
+            DueDate = DateTime.Now.AddDays(7)
+        };
+
+        // Act
+        await taskService.Create(request, ownerId);
+
+        // Assert
+        var createdTask = await taskService.GetTasksPaginated(ownerId, 1, 1);
+
+        Assert.IsNotNull(createdTask, "Created task should not be null");
+        Assert.AreEqual(3, createdTask.Count(), "There should be exactly one task");
+
+        var retrievedTask = createdTask.First();
+        Assert.AreEqual(request.Name, retrievedTask.Name, "Name should match");
+        Assert.AreEqual(request.Description, retrievedTask.Description, "Description should match");
+        Assert.AreEqual(request.ImportanceLevel, retrievedTask.ImportanceLevel, "ImportanceLevel should match");
+        Assert.AreEqual(request.DueDate, retrievedTask.DueDate, "DueDate should match");
+    }
+
+    [TestMethod]
+    public async Task Create_ErrorDuringTaskCreation()
+    {
+        // Arrange
+        var ownerId = "testOwnerId1";
+        var request = new TaskForCreationRequest
+        {
+            Name = null,
+            Description = null,
+            ImportanceLevel = "InvalidImportance",
+            DueDate = DateTime.Now.AddDays(-1)
+        };
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            await taskService.Create(request, ownerId);
+        });
+    }
+
+    [TestMethod]
+    public async Task Create_PastDueDate_ThrowsValidationException()
+    {
+        // Arrange
+        var ownerId = "testOwnerId1";
+        var request = new TaskForCreationRequest
+        {
+            Name = "Test Task",
+            Description = "Test Description",
+            ImportanceLevel = "High",
+            DueDate = DateTime.Now.AddDays(-1)
+        };
+
+        // Act and Assert
+        try
+        {
+            await taskService.Create(request, ownerId);
+            Assert.Fail("Expected TaskManagerException, but no exception was thrown.");
+        }
+        catch (TaskManagerException ex)
+        {
+            // Check if the inner exception is a ValidationException
+            Assert.IsInstanceOfType(ex.InnerException, typeof(ValidationException));
+        }
+        catch (Exception)
+        {
+            Assert.Fail("Expected TaskManagerException, but a different exception was thrown.");
+        }
+    }
+
+    [TestMethod]
+    public async Task Delete_SuccessfulTaskRemoval()
+    {
+        // Arrange
+        // Valid data
+        var Id = Guid.Parse("958bda36-754a-4358-b991-225d8de25e92");
+        string ownerId = "testOwnerId1";
 
 
-    // Add other test methods...
+        // Act
+        await taskService.DeleteById(Id, ownerId);
+
+        // Assert
+
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            var deletedTask = await taskService.GetById(Id, ownerId);
+        });
+    }
+
+    [TestMethod]
+    public async Task Delete_InvalidTaskRemoval()
+    {
+        // Arrange
+        // Invalid data
+        var invalidId = Guid.Parse("BECF18A9-6BA8-431D-AF65-299537010172");
+        string ownerId = "testOwnerId1";
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            var deletedTask = await taskService.GetById(invalidId, ownerId);
+        });
+    }
+
+    [TestMethod]
+    public async Task GetTasksPaginated_ReturnsCorrectNumberOfTasks()
+    {
+        // Arrange
+        string ownerId = "testOwnerId1";
+        int pageNumber = 1;
+        int pageSize = 1; // Assuming you have seeded 2 tasks
+
+        // Act
+        var paginatedTasks = await taskService.GetTasksPaginated(ownerId, pageNumber, pageSize);
+
+        // Assert
+        Assert.IsNotNull(paginatedTasks, "Returned tasks should not be null");
+        Assert.AreEqual(pageSize, paginatedTasks.Count(), $"Expected {pageSize} tasks for page {pageNumber}");
+
+    }
+
+    [TestMethod]
+    public async Task GetTasksPaginated_InvalidOwnerIdReturnsZeroTasks()
+    {
+        // Arrange
+        string invalidOwnerId = "nonexistentOwnerId";
+        int pageNumber = 1;
+        int pageSize = 0;
+
+        // Act
+        var paginatedTasks = await taskService.GetTasksPaginated(invalidOwnerId, pageNumber, pageSize);
+
+        // Assert
+        Assert.AreEqual(pageSize, paginatedTasks.Count(), $"Expected {pageSize} tasks for page {pageNumber}");
+    }
+
+    [TestMethod]
+    public async Task GetTaskBy_WithValidDataIdReturnsTask()
+    {
+        // Arrange
+        var validId = Guid.Parse("958bda36-754a-4358-b991-225d8de25e92");
+        var validOwnerId = "testOwnerId1";
+
+        // Act
+        var task = await taskService.GetById(validId, validOwnerId);
+
+        // Assert
+        Assert.IsNotNull(task, "Task shouild not be null");
+    }
+
+    [TestMethod]
+    public async Task GetTaskBy_WithInvalidDataIdReturnsTask()
+    {
+        // Arrange
+        var validId = Guid.Parse("BECF18A9-6BA8-431D-AF65-299537010172");
+        var validOwnerId = "testOwnerId12";
+
+        // Act
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            var task = await taskService.GetById(validId, validOwnerId);
+        });
+    }
+
+    [TestMethod]
+    public async Task GetTasksCount_WithValidDataReturnsCount()
+    {
+        // Arrange
+        var validOwnerId = "testOwnerId1";
+        int expectedCount = 1;
+
+        // Act
+        int taskCount = await taskService.GetCountOfAll(validOwnerId);
+
+        // Assert
+        Assert.AreEqual(expectedCount, taskCount);
+    }
+
+    [TestMethod]
+    public async Task GetTasksCount_WithInvalidDataThrowsException()
+    {
+        // Arrange
+
+        var invalidOwnerId = "testOwnerId12";
+        int expectedCount = 0;
+
+        // Act
+
+        // Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            int taskCount = await taskService.GetCountOfAll(invalidOwnerId);
+        });
+    }
+
+    [TestMethod]
+    public async Task UpdateById_ValidTask_UpdateSuccessful()
+    {
+        // Arrange
+        var ownerId = "testOwnerId1";
+        var existingTaskId = Guid.Parse("958bda36-754a-4358-b991-225d8de25e92");
+
+        var updatedTask = new TaskForUpdateRequest
+        {
+            Id = existingTaskId,
+            Name = "Updated Task",
+            Description = "Updated Description",
+            ImportanceLevel = "High",
+            DueDate = DateTime.Now.AddDays(7)
+        };
+
+        // Act
+        await taskService.UpdateById(updatedTask, ownerId);
+
+        // Assert
+        var updatedTaskFromDb = await taskService.GetById(existingTaskId, ownerId);
+        Assert.IsNotNull(updatedTaskFromDb, "Task should be updated");
+        Assert.AreEqual("Updated Task", updatedTaskFromDb.Name, "Task name should be updated");
+    }
+
+    [TestMethod]
+    public async Task UpdateById_InvalidTask_ThrowsException()
+    {
+        // Arrange
+        var ownerId = "testOwnerId1";
+        var nonExistingTaskId = Guid.Parse("BECF18A9-6BA8-431D-AF65-299537010172");
+
+        var updatedTask = new TaskForUpdateRequest
+        {
+            Id = nonExistingTaskId,
+            Name = "Updated Task",
+            Description = "Updated Description",
+            ImportanceLevel = "High",
+            DueDate = DateTime.Now.AddDays(7)
+        };
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            await taskService.UpdateById(updatedTask, ownerId);
+        });
+    }
+
+    [TestMethod]
+    public async Task UpdateById_TaskWithPastDueDate_ThrowsException()
+    {
+        // Arrange
+        var ownerId = "testOwnerId1";
+        var existingTaskId = Guid.Parse("958bda36-754a-4358-b991-225d8de25e92");
+
+        var updatedTask = new TaskForUpdateRequest
+        {
+            Id = existingTaskId,
+            Name = "Updated Task",
+            Description = "Updated Description",
+            ImportanceLevel = "High",
+            DueDate = DateTime.Now.AddDays(-1)
+        };
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            await taskService.UpdateById(updatedTask, ownerId);
+        });
+    }
+
 }
+

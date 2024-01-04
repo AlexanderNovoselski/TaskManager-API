@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using TaskManager.Data.Enums;
+using TaskManager.Models.Requests.Utils;
 
 namespace TaskManager.Models.Requests
 {
@@ -21,6 +22,7 @@ namespace TaskManager.Models.Requests
         public string ImportanceLevel { get; set; }
 
         [Required]
+        [FutureDate(ErrorMessage = "Due date must be a future date.")]
         public DateTime DueDate { get; set; }
     }
 }
