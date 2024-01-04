@@ -6,6 +6,7 @@ using TaskManager.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure services
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IAccountManager, AccountManager>();
 
@@ -22,16 +23,32 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.Configure<IdentityOptions>(options =>
 {
+    // Password policies
     options.Password.RequireDigit = true;
     options.Password.RequireUppercase = true;
     options.User.RequireUniqueEmail = true;
-})
-.AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+});
+
+builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
+
+// CORS configuration
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://facebook.com")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
+
 
 var app = builder.Build();
 
@@ -52,6 +69,21 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    // Security Headers Middleware
+    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
+    context.Response.Headers.Add("Referrer-Policy", "no-referrer");
+    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+    context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+    context.Response.Headers.Add("X-Xss-Protection", "1; mode=block");
+
+    await next();
+});
+
+// Enable CORS
+app.UseCors();
 
 app.MapControllerRoute(
     name: "default",
