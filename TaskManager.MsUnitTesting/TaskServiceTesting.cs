@@ -62,7 +62,16 @@ public class TaskServiceTests
                 IsCompleted = true,
                 DueDate = DateTime.UtcNow.AddDays(14)
             },
-            // Add more tasks as needed
+            new ToDoTask
+            {
+                Id = Guid.Parse("0a44cf2f-0479-4a74-9c30-9d5f2a05ef0a"),
+                OwnerId = "testOwnerId2",
+                Name = "Task for testing",
+                Description = "Description for Task 2",
+                ImportanceLevel = Importance.Low,
+                IsCompleted = true,
+                DueDate = DateTime.UtcNow.AddDays(14)
+            },
         };
 
         context.Tasks.AddRange(tasks);
@@ -399,6 +408,50 @@ public class TaskServiceTests
         await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
         {
             await taskService.UpdateById(updatedTask, ownerId);
+        });
+    }
+
+    [TestMethod]
+    public async Task GetTasksBySearch_ValidData_ReturnsTasks()
+    {
+        // Arrange
+        var ownerId = "testOwnerId2";
+        var searchCriteria = "testing";
+
+        // Act
+        var result = await taskService.GetTasksBySearch(ownerId, searchCriteria);
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(IEnumerable<TaskDTO>));
+        Assert.AreEqual(1, result.Count()); // Assuming there are 1 tasks in the mock data
+    }
+
+    [TestMethod]
+    public async Task GetTasksBySearch_InvalidSearchCriteria_ReturnsTasks()
+    {
+        // Arrange
+        var ownerId = "testOwnerId2";
+        var searchCriteria = "testing1234";
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            await taskService.GetTasksBySearch(ownerId, searchCriteria);
+        });
+    }
+
+    [TestMethod]
+    public async Task GetTasksBySearch_InvalidOwnerId_ThrowsException()
+    {
+        // Arrange
+        var invalidOwnerId = "invalidOwnerId";
+        var searchCriteria = "someSearchCriteria";
+
+        // Act and Assert
+        await Assert.ThrowsExceptionAsync<TaskManagerException>(async () =>
+        {
+            await taskService.GetTasksBySearch(invalidOwnerId, searchCriteria);
         });
     }
 

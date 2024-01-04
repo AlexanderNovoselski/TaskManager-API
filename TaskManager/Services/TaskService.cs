@@ -42,6 +42,12 @@ namespace TaskManager.Services
                     })
                     .ToListAsync();
 
+                if (tasks.Count == 0)
+                {
+                    // No tasks found based on the search criteria
+                    throw new TaskManagerException("No tasks found based on the provided criteria.");
+                }
+
                 return tasks;
             }
             catch (Exception ex)

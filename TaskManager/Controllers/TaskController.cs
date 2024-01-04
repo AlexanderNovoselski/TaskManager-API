@@ -29,6 +29,12 @@ namespace TaskManager.Controllers
                 // Call the service method to get tasks by search criteria
                 var tasks = await _taskService.GetTasksBySearch(OwnerId, searchCriteria);
 
+
+                if (!tasks.Any())
+                {
+                    return NotFound("Tasks not found");
+                }
+
                 // Return the result as JSON
                 return Ok(tasks);
             }
