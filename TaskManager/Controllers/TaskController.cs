@@ -48,12 +48,34 @@ namespace TaskManager.Controllers
 
         [Authorize]
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetTasks([FromQuery] int pageNumber = 1)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetAllTasks([FromQuery] int pageNumber = 1)
+        {
+            const int pageSize = 5;
+            try
+            {
+                var tasks = await _taskService.GetTasksPaginated(OwnerId, pageNumber, pageSize);
+
+                if (!tasks.Any())
+                {
+                    return NotFound("Tasks not found");
+                }
+
+                return Ok(tasks);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetAllIncompleted")]
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetAllNonCompletedTasks([FromQuery] int pageNumber = 1)
         {
             const int pageSize = 8;
             try
             {
-                var tasks = await _taskService.GetTasksPaginated(OwnerId, pageNumber, pageSize);
+                var tasks = await _taskService.GetNonCompletedTasksPaginated(OwnerId, pageNumber, pageSize);
 
                 if (!tasks.Any())
                 {
@@ -74,7 +96,6 @@ namespace TaskManager.Controllers
         {
             try
             {
-
                 var task = await _taskService.GetById(request.Id, OwnerId);
 
                 if (task == null)

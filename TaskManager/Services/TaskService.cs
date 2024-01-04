@@ -20,6 +20,72 @@ namespace TaskManager.Services
             _context = context;
         }
 
+        public async Task<IEnumerable<TaskDTO>> GetTasksPaginated(string ownerId, int pageNumber, int pageSize)
+        {
+            try
+            {
+                // Search for all tasks from a certain page with const pageSize 8, where userId owns a task, and ordering tasks by descending
+                var tasks = await _context.Tasks
+                    .Where(x => x.OwnerId == ownerId)
+                    .OrderByDescending(t => t.AddedDate)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(t => new TaskDTO
+                    {
+                        Id = t.Id,
+                        OwnerId = t.OwnerId,
+                        Name = t.Name,
+                        Description = t.Description,
+                        ImportanceLevel = t.ImportanceLevel,
+                        IsCompleted = t.IsCompleted,
+                        AddedDate = t.AddedDate,
+                        DueDate = t.DueDate,
+                        UpdatedDate = t.UpdatedDate
+                    })
+                    .ToListAsync();
+
+                return tasks;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error retrieving paginated tasks", ex);
+            }
+        }
+
+        public async Task<IEnumerable<TaskDTO>> GetNonCompletedTasksPaginated(string ownerId, int pageNumber, int pageSize)
+        {
+            try
+            {
+                // Search for all tasks from a certain page with const pageSize 8, where userId owns a task, and ordering tasks by descending
+                var tasks = await _context.Tasks
+                    .Where(x => x.OwnerId == ownerId && x.IsCompleted == false)
+                    .OrderByDescending(t => t.AddedDate)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(t => new TaskDTO
+                    {
+                        Id = t.Id,
+                        OwnerId = t.OwnerId,
+                        Name = t.Name,
+                        Description = t.Description,
+                        ImportanceLevel = t.ImportanceLevel,
+                        IsCompleted = t.IsCompleted,
+                        AddedDate = t.AddedDate,
+                        DueDate = t.DueDate,
+                        UpdatedDate = t.UpdatedDate
+                    })
+                    .ToListAsync();
+
+                return tasks;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error retrieving paginated tasks", ex);
+            }
+        }
+
         public async Task<IEnumerable<TaskDTO>> GetTasksBySearch(string ownerId, string searchCriteria)
         {
             try
@@ -139,40 +205,6 @@ namespace TaskManager.Services
             }
         }
 
-
-        public async Task<IEnumerable<TaskDTO>> GetTasksPaginated(string ownerId, int pageNumber, int pageSize)
-        {
-            try
-            {
-                // Search for all tasks from a certain page with const pageSize 8, where userId owns a task, and ordering tasks by descending
-                var tasks = await _context.Tasks
-                    .Where(x => x.OwnerId == ownerId)
-                    .OrderByDescending(t => t.AddedDate)
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .Select(t => new TaskDTO
-                    {
-                        Id = t.Id,
-                        OwnerId = t.OwnerId,
-                        Name = t.Name,
-                        Description = t.Description,
-                        ImportanceLevel = t.ImportanceLevel,
-                        IsCompleted = t.IsCompleted,
-                        AddedDate = t.AddedDate,
-                        DueDate = t.DueDate,
-                        UpdatedDate = t.UpdatedDate
-                    })
-                    .ToListAsync();
-
-                return tasks;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                throw new TaskManagerException("Error retrieving paginated tasks", ex);
-            }
-        }
-
         public async Task<TaskDTO> GetById(Guid id, string ownerId)
         {
             try
@@ -272,5 +304,7 @@ namespace TaskManager.Services
                 UpdatedDate = taskEntity.UpdatedDate
             };
         }
+
+
     }
 }
