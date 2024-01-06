@@ -11,5 +11,6 @@
     <WebStackScaffolding_LayoutPageFile />
     <WebStackScaffolding_DbContextTypeFullName>TaskManager.Data.ApplicationDbContext</WebStackScaffolding_DbContextTypeFullName>
     <WebStackScaffolding_IsAsyncSelected>False</WebStackScaffolding_IsAsyncSelected>
+    <NameOfLastUsedPublishProfile>C:\Users\USER\Desktop\taskmanag\.github\workflows\TaskManager20240106194805.yml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>
