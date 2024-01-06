@@ -42,7 +42,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://facebook.com")
+        builder.WithOrigins("https://taskmanager20240106194805.azurewebsites.net")
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
