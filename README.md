@@ -32,6 +32,19 @@ Before getting started, ensure you have the following installed on your system:
 ### Authentication
 This API uses token-based authentication. Users need to include a valid JWT token in the Authorization header of their requests. Make sure to obtain a token by authenticating through the `/api/auth/login` and `/api/auth/register` endpoints.
 
+
+#### Endpoints
+
+- **Local Development:**
+    ```bash
+    https://localhost:{port}
+    ```
+- **Azure Hosted API and Database:**
+- Access your API and database hosted on Azure for testing purposes using: 
+    ```bash
+    https://taskmanager20240106194805.azurewebsites.net/
+    ```
+
 #### Authentication Endpoints
 
 - **POST /api/Account/register**
