@@ -53,14 +53,24 @@ namespace TaskManager.Services
             }
         }
 
-        public async Task<IEnumerable<TaskDTO>> GetNonCompletedTasksPaginated(string ownerId, int pageNumber, int pageSize)
+        public async Task<IEnumerable<TaskDTO>> GetNonCompletedTasksPaginated(string ownerId, DateTime clickedDate, int pageNumber, int pageSize)
         {
             try
             {
                 // Search for all tasks from a certain page with const pageSize 8, where userId owns a task, and ordering tasks by descending
+                int day = clickedDate.Day;
+                int month = clickedDate.Month;
+                int year = clickedDate.Year;
+
+                // Create a new DateTime with the same day, month, and year, but with time set to midnight
+                DateTime startDate = new DateTime(year, month, day, 0, 0, 0);
+
+                // Create a new DateTime representing the end of the day
+                DateTime endDate = startDate.AddDays(1).AddTicks(-1);
+
                 var tasks = await _context.Tasks
-                    .Where(x => x.OwnerId == ownerId && x.IsCompleted == false)
-                    .OrderByDescending(t => t.AddedDate)
+                    .Where(x => x.OwnerId == ownerId && x.IsCompleted == false && x.DueDate >= startDate && x.DueDate <= endDate)
+                            .OrderByDescending(t => t.AddedDate)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .Select(t => new TaskDTO

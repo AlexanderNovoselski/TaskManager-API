@@ -8,7 +8,7 @@ namespace TaskManager.Services.Contracts
     {
         Task<IEnumerable<TaskDTO>> GetTasksBySearch(string ownerId, string searchCriteria);
         Task<IEnumerable<TaskDTO>> GetTasksPaginated(string ownerId, int pageNumber, int pageSize);
-        Task<IEnumerable<TaskDTO>> GetNonCompletedTasksPaginated(string ownerId, int pageNumber, int pageSize);
+        Task<IEnumerable<TaskDTO>> GetNonCompletedTasksPaginated(string ownerId, DateTime clickedDate, int pageNumber, int pageSize);
 
         Task<TaskDTO> GetById(Guid id, string ownerId);
 

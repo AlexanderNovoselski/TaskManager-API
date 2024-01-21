@@ -9,15 +9,15 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = TaskManager
 build_property.RootNamespace = TaskManager
-build_property.ProjectDir = C:\Users\USER\Desktop\taskmanag\TaskManager\
+build_property.ProjectDir = C:\Users\USER\Desktop\taskapi\TaskManager\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\USER\Desktop\taskmanag\TaskManager
+build_property.MSBuildProjectDirectory = C:\Users\USER\Desktop\taskapi\TaskManager
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/USER/Desktop/taskmanag/TaskManager/Areas/Identity/Pages/_ViewStart.cshtml]
+[C:/Users/USER/Desktop/taskapi/TaskManager/Areas/Identity/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

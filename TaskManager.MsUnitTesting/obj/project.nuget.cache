@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "99bCr0SGg0qx4zp/nHMTbUElY7FhHx3q3Pk1hqyl79IMJ0BVYyM7ADC2rkWhlo4hmhSmpnJ3I2iYLL8zJXEItw==",
+  "dgSpecHash": "ja+zLLtj3OGG2fFlcq1Ivyt1SkZtUIHWXq0BGCm22EfhhH6fYzhewj0kMgxwty8j8yBkfi90W2lJ3i8SUH9tdQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\USER\\Desktop\\taskmanag\\TaskManager.MsUnitTesting\\TaskManager.MsUnitTesting.csproj",
+  "projectFilePath": "C:\\Users\\USER\\Desktop\\taskapi\\TaskManager.MsUnitTesting\\TaskManager.MsUnitTesting.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\USER\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\coverlet.collector\\3.2.0\\coverlet.collector.3.2.0.nupkg.sha512",
@@ -246,10 +246,7 @@
     "C:\\Users\\USER\\.nuget\\packages\\system.threading.timer\\4.3.0\\system.threading.timer.4.3.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
-    "C:\\Users\\USER\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
-    "C:\\Users\\USER\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.25\\microsoft.windowsdesktop.app.ref.6.0.25.nupkg.sha512",
-    "C:\\Users\\USER\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.25\\microsoft.netcore.app.ref.6.0.25.nupkg.sha512",
-    "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.25\\microsoft.aspnetcore.app.ref.6.0.25.nupkg.sha512"
+    "C:\\Users\\USER\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
   ],
   "logs": []
 }
