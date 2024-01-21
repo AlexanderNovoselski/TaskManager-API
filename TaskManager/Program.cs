@@ -38,15 +38,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
 builder.Services.AddControllersWithViews();
 
 // CORS configuration
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.WithOrigins("https://taskmanager20240106194805.azurewebsites.net")
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
-});
+
 
 var app = builder.Build();
 
@@ -89,3 +81,14 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+
+
+
+//public ICommand Register => new Command(() =>
+//{
+//    if (REPassword != Password)
+//        return; // gonna add cool functionality for displaying PASSWORDS DONT MATCH
+
+//    // logic to reg the user ... send somewhere something with http server service or whatever
+//});
