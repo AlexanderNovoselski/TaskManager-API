@@ -82,9 +82,13 @@ namespace TaskManager.Services
             try
             {
                 // Logout of user
-                if (!isUserAuthenticated)
+                if (isUserAuthenticated)
                 {
                     await _signInManager.SignOutAsync();
+                }
+                else
+                {
+                    throw new Exception("User not logged in");
                 }
             }
             catch (Exception e)
