@@ -9,7 +9,7 @@ namespace TaskManager.Services.Contracts
 
         Task<LoginResult> LoginAsync(string username, string password, bool rememberMe, bool isUserAuthenticated);
 
-        Task LogoutAsync();
+        Task LogoutAsync(bool isUserAuthenticated);
 
         Task DeleteUserAsync(string userId);
     }

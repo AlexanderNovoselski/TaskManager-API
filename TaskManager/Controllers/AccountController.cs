@@ -92,12 +92,12 @@ namespace TaskManager.Controllers
         {
             try
             {
-                await _accountManager.LogoutAsync();
+                await _accountManager.LogoutAsync(IsUserAuthenticated());
                 return Ok("Logout successful");
             }
             catch (Exception)
             {
-                return BadRequest();
+                return BadRequest("There isn't a logged in user");
             }
 
         }

@@ -49,7 +49,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateIssuerSigningKey = true,
-            ValidateLifetime = true,  // Make sure to validate token lifetime
+            ValidateLifetime = true,
             ValidIssuer = "Task_Api",
             ValidAudience = "Xamarin_Mobile_App",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("3X4mp13_Str0ng_S3cr3t_K3y_!@#$%^&*")),
@@ -81,7 +81,6 @@ app.UseAuthorization();
 
 app.Use(async (context, next) =>
 {
-    // Security Headers Middleware
     context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'");
     context.Response.Headers.Add("Referrer-Policy", "no-referrer");
     context.Response.Headers.Add("X-Content-Type-Options", "nosniff");

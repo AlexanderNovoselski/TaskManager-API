@@ -77,12 +77,15 @@ namespace TaskManager.Services
             }
         }
 
-        public async Task LogoutAsync()
+        public async Task LogoutAsync(bool isUserAuthenticated)
         {
             try
             {
                 // Logout of user
-                await _signInManager.SignOutAsync();
+                if (!isUserAuthenticated)
+                {
+                    await _signInManager.SignOutAsync();
+                }
             }
             catch (Exception e)
             {
