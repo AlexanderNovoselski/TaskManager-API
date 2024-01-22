@@ -53,7 +53,7 @@ namespace TaskManager.Services
             }
         }
 
-        public async Task<IEnumerable<TaskDTO>> GetNonCompletedTasksPaginated(string ownerId, DateTime clickedDate, int pageNumber, int pageSize)
+        public async Task<IEnumerable<TaskDTO>> GetNonCompletedTasks(string ownerId, DateTime clickedDate)
         {
             try
             {
@@ -70,9 +70,7 @@ namespace TaskManager.Services
 
                 var tasks = await _context.Tasks
                     .Where(x => x.OwnerId == ownerId && x.IsCompleted == false && x.DueDate >= startDate && x.DueDate <= endDate)
-                            .OrderByDescending(t => t.AddedDate)
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
+                    .OrderByDescending(t => t.AddedDate)
                     .Select(t => new TaskDTO
                     {
                         Id = t.Id,
@@ -92,7 +90,7 @@ namespace TaskManager.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                throw new TaskManagerException("Error retrieving paginated tasks", ex);
+                throw new TaskManagerException("Error retrieving tasks", ex);
             }
         }
 

@@ -70,12 +70,11 @@ namespace TaskManager.Controllers
 
         [Authorize]
         [HttpGet("GetAllIncompleted")]
-        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetAllNonCompletedTasks([FromQuery] int pageNumber = 1, [FromQuery] DateTime? DueDate = null)
+        public async Task<ActionResult<IEnumerable<TaskDTO>>> GetAllNonCompletedTasks([FromQuery] DateTime? DueDate = null)
         {
-            const int pageSize = 8;
             try
             {
-                var tasks = await _taskService.GetNonCompletedTasksPaginated(OwnerId, DueDate ?? DateTime.Now.Date, pageNumber, pageSize);
+                var tasks = await _taskService.GetNonCompletedTasks(OwnerId, DueDate ?? DateTime.Now.Date);
 
                 if (!tasks.Any())
                 {
