@@ -30,7 +30,7 @@ Before getting started, ensure you have the following installed on your system:
 ## Usage
 
 ### Authentication
-This API uses token-based authentication. Users need to include a valid JWT token in the Authorization header of their requests. Make sure to obtain a token by authenticating through the `/api/auth/login` and `/api/auth/register` endpoints.
+This API uses token-based authentication. Users need to include a valid JWT token in the Authorization header of their requests. Make sure to obtain a token by authenticating through the `/api/auth/login` and to use this token on each request as a Header: Bearer {token}
 
 
 #### Endpoints
@@ -62,6 +62,8 @@ This API uses token-based authentication. Users need to include a valid JWT toke
     ```bash
     POST /api/auth/login
     ```
+  - JSON Parameters:
+    - `Token` (string): The unique token to access each points of the API.
 
 - **POST /api/Account/logout**
   - Log out the currently authenticated user.
@@ -98,11 +100,11 @@ This API uses token-based authentication. Users need to include a valid JWT toke
       ```
 
 - **GET /api/Task/GetAllIncompleted**
-    - Retrieve all non-completed tasks paginated.
-    - Parameters: `pageNumber` (query string, optional)
+    - Retrieve all non-completed tasks by a specified due date.
+    - Parameters: `DueDate` (query string, optional, default value = today)
     - Example:
       ```bash
-      GET /api/Task/GetAllIncompleted?pageNumber=1
+      GET /api/Task/GetAllIncompleted?DueDate=2024-01-22
       ```
 
 - **GET /api/Task/GetTask**
