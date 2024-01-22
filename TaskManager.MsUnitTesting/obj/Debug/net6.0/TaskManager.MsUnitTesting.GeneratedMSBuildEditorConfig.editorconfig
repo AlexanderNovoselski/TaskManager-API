@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = TaskManager.MsUnitTesting
-build_property.ProjectDir = C:\Users\USER\Desktop\taskapi\TaskManager.MsUnitTesting\
+build_property.ProjectDir = C:\Users\USER\Desktop\New folder (2)\TaskManager.MsUnitTesting\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

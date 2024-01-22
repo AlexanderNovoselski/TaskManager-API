@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using TaskManager.Models.Requests.Account;
 using TaskManager.Services.Contracts;
 
@@ -22,6 +26,30 @@ namespace TaskManager.Controllers
             return User.Identity.IsAuthenticated;
         }
 
+        private string GenerateToken(string userId, string username)
+        {
+            string yourSecretKey = "3X4mp13_Str0ng_S3cr3t_K3y_!@#$%^&*";
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(yourSecretKey));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, userId),
+            new Claim(ClaimTypes.Name, username),
+    };
+
+            var token = new JwtSecurityToken(
+                issuer: "Task_Api",
+                audience: "Xamarin_Mobile_App",
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(20),
+                signingCredentials: credentials
+            );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenHandler.WriteToken(token);
+        }
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
@@ -43,12 +71,15 @@ namespace TaskManager.Controllers
             {
                 var result = await _accountManager.LoginAsync(request.Username, request.Password, request.RememberMe, IsUserAuthenticated());
 
-                if (!result.Succeeded)
+                if (result.Succeeded)
                 {
-                    throw new ArgumentException();
+                    // Generate and return a token
+                    var token = GenerateToken(result.UserId, result.Username);
+
+                    return Ok(new { Message = "Login Successful", Token = token, UserId = result.UserId, Email = result.Email, Username = result.Username });
                 }
-                    // If login is successful, return the Id property
-                return Ok(new { Message = "Login Successfull", UserId = result.UserId, Email = result.Email, Username = result.Username });
+
+                throw new ArgumentException();
             }
             catch (Exception)
             {

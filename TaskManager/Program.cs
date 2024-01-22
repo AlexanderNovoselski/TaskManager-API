@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TaskManager.Data;
 using TaskManager.Services;
 using TaskManager.Services.Contracts;
@@ -37,8 +40,24 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
 
 builder.Services.AddControllersWithViews();
 
-// CORS configuration
+// Add JWT authentication services
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,  // Make sure to validate token lifetime
+            ValidIssuer = "Task_Api",
+            ValidAudience = "Xamarin_Mobile_App",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("3X4mp13_Str0ng_S3cr3t_K3y_!@#$%^&*")),
+            ClockSkew = TimeSpan.FromMinutes(1)
+        };
+    });
 
+// CORS configuration
 
 var app = builder.Build();
 
@@ -81,14 +100,3 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
-
-
-
-
-//public ICommand Register => new Command(() =>
-//{
-//    if (REPassword != Password)
-//        return; // gonna add cool functionality for displaying PASSWORDS DONT MATCH
-
-//    // logic to reg the user ... send somewhere something with http server service or whatever
-//});
