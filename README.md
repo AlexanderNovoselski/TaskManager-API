@@ -62,7 +62,7 @@ This API uses token-based authentication. Users need to include a valid JWT toke
     ```bash
     POST /api/auth/login
     ```
-  - JSON Parameters:
+  - Response:
     - `Token` (string): The unique token to access each points of the API.
 
 - **POST /api/Account/logout**
@@ -165,6 +165,16 @@ This API uses token-based authentication. Users need to include a valid JWT toke
     - Example:
       ```bash
       GET /api/Task/GetCount
+      ```
+    - JSON Parameters:
+      - None
+     
+- **GET /api/Task/GetCountByDate**
+    - Retrieve the count of tasks until a selected duedate.
+    - Parameters: `DueDate` (query string, optional, default value = today)
+    - Example:
+      ```bash
+      GET /api/Task/GetCountByDate?&DueDate=2024-01-27
       ```
     - JSON Parameters:
       - None
