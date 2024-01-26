@@ -252,6 +252,37 @@ namespace TaskManager.Services
             }
         }
 
+        public async Task<int> GetCountByDate(string ownerId, DateTime clickedDate)
+        {
+            try
+            {
+                // Search for all tasks from a certain page with const pageSize 8, where userId owns a task, and ordering tasks by descending
+                int day = clickedDate.Day;
+                int month = clickedDate.Month;
+                int year = clickedDate.Year;
+
+                // Create a new DateTime with the same day, month, and year, but with time set to midnight
+                DateTime startDate = new DateTime(year, month, day, 0, 0, 0);
+
+                // Create a new DateTime representing the end of the day
+                DateTime endDate = startDate.AddDays(1).AddTicks(-1);
+                // Get all of the tasks
+                var taskDb = await _context.Tasks.Where(t => t.OwnerId == ownerId && t.DueDate <= endDate).ToListAsync();
+                if (taskDb == null || taskDb.Count == 0)
+                {
+                    throw new TaskManagerException("No tasks found");
+                }
+
+                // Get the count of the tasks
+                return taskDb.Count();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new TaskManagerException("Error retrieving the count of the tasks", ex);
+            }
+        }
+
         public async Task UpdateById(TaskForUpdateRequest updatedTask, string ownerId)
         {
 
@@ -294,7 +325,7 @@ namespace TaskManager.Services
                 throw new TaskManagerException("Error updating task", ex);
             }
         }
-       
+
 
         // Helper method to map the db entity
         private TaskDTO MapTaskEntityToTaskDTO(ToDoTask taskEntity)

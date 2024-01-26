@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wBdrLPisYoEoNqVwuWU442lop8qpuT76qtzUKMP1pjRa+5XxTD8New30hPSSUQIY819n8amUpK4EtJbmeNiBIQ==",
+  "dgSpecHash": "sVJkHCkbZTcrqUvlKQbgnmR7zjhG/PXVpEq1l0RslF9uNSPtxWqwYUlGQ/s/ocZHdo/fFwiPa7F6Cw6/a6td2A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager.MsUnitTesting\\TaskManager.MsUnitTesting.csproj",
+  "projectFilePath": "C:\\Users\\USER\\Desktop\\task_api\\TaskManager.MsUnitTesting\\TaskManager.MsUnitTesting.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\USER\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\coverlet.collector\\3.2.0\\coverlet.collector.3.2.0.nupkg.sha512",

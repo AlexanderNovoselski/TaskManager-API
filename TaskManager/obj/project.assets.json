@@ -11532,11 +11532,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager\\TaskManager.csproj",
+      "projectUniqueName": "C:\\Users\\USER\\Desktop\\task_api\\TaskManager\\TaskManager.csproj",
       "projectName": "TaskManager",
-      "projectPath": "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager\\TaskManager.csproj",
+      "projectPath": "C:\\Users\\USER\\Desktop\\task_api\\TaskManager\\TaskManager.csproj",
       "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager\\obj\\",
+      "outputPath": "C:\\Users\\USER\\Desktop\\task_api\\TaskManager\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",

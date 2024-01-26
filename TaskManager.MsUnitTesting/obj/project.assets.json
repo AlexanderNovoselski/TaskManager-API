@@ -12734,11 +12734,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager.MsUnitTesting\\TaskManager.MsUnitTesting.csproj",
+      "projectUniqueName": "C:\\Users\\USER\\Desktop\\task_api\\TaskManager.MsUnitTesting\\TaskManager.MsUnitTesting.csproj",
       "projectName": "TaskManager.MsUnitTesting",
-      "projectPath": "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager.MsUnitTesting\\TaskManager.MsUnitTesting.csproj",
+      "projectPath": "C:\\Users\\USER\\Desktop\\task_api\\TaskManager.MsUnitTesting\\TaskManager.MsUnitTesting.csproj",
       "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager.MsUnitTesting\\obj\\",
+      "outputPath": "C:\\Users\\USER\\Desktop\\task_api\\TaskManager.MsUnitTesting\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -12755,8 +12755,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager\\TaskManager.csproj": {
-              "projectPath": "C:\\Users\\USER\\Desktop\\New folder (2)\\TaskManager\\TaskManager.csproj"
+            "C:\\Users\\USER\\Desktop\\task_api\\TaskManager\\TaskManager.csproj": {
+              "projectPath": "C:\\Users\\USER\\Desktop\\task_api\\TaskManager\\TaskManager.csproj"
             }
           }
         }

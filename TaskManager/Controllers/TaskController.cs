@@ -200,5 +200,27 @@ namespace TaskManager.Controllers
 
         }
 
+        [Authorize]
+        [HttpGet("GetCountByDate")]
+
+        public async Task<IActionResult> GetCountByDate([FromQuery] DateTime? DueDate = null)
+        {
+            try
+            {
+                var count = await _taskService.GetCountByDate(OwnerId, DueDate ?? DateTime.Now.Date);
+                var result = new { Count = count };
+
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return NotFound("Tasks not found");
+            }
+
+        }
+
+        //        da se vijdat taskove za cqlata sedmica
+        // update readme response {token} v login-a
+        // unit test za getcountbydate i GetAllNonCompletedTasks
     }
 }

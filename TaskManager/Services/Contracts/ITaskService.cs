@@ -19,6 +19,7 @@ namespace TaskManager.Services.Contracts
         Task DeleteById(Guid id, string ownerId);
 
         Task<int> GetCountOfAll(string ownerId);
+        Task<int> GetCountByDate(string ownerId, DateTime clickedDate);
 
         Task UpdateCompletition(PatchTaskRequest request, string ownerId);
     }
